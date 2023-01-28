@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "82695125161",
+    "project_id": "fortlinedatabase-bfdb9",
+    "storage_bucket": "fortlinedatabase-bfdb9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82695125161:android:58430f84bcb323687351b8",
+        "android_client_info": {
+          "package_name": "com.sc.fortline_admin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82695125161-9de81usmssko86h1rvcmjcphbdponhsb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbZfg0yYtgCjTLXKkL7mx7cRfDhdOiirI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82695125161-9de81usmssko86h1rvcmjcphbdponhsb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
