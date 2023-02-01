@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'appdrawer.dart';
 
 class InvoiceInputForm extends StatefulWidget {
   const InvoiceInputForm({Key? key}) : super(key: key);
@@ -13,7 +16,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
   String _invoiceNo = "";
   String _invoiceDate = "";
   int _invoiceAmount = 0;
-  String _customerId = "";
+  TextEditingController _customerId = TextEditingController();
   int _rebate = 0;
   String _adjustmentType = "";
   String _adjustmentDocumentDate = "";
@@ -21,15 +24,25 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _adjDateController = TextEditingController();
   TextEditingController _invoiceDateController = TextEditingController();
+  List<String>? _customers;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () async{
+      _customers = await _getCustomersId();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     Size _deviceSize = MediaQuery.of(context).size;
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text("Fortline"),
       ),
       body: Center(child: Container(
-        height: _deviceSize.height * 80 / 100,
+        height: _deviceSize.height * 95 / 100,
         width: _deviceSize.width * 50 / 100,
         child: Card(
           shape: RoundedRectangleBorder(
@@ -50,7 +63,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                   child: Expanded(child: Column(
                     children: <Widget>[
                       SizedBox(height: 10,),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
                           child: TextFormField(
                             validator: (val){
                               if(val!.isEmpty){
@@ -79,7 +92,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                             ),
                           )),
                         flex: 1,),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
                         child: TextFormField(
                           keyboardType: TextInputType.datetime,
                           validator: (val){
@@ -114,7 +127,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                           ),
                         ),
                       ), flex: 1,),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           validator: (val){
@@ -146,37 +159,24 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                       ),
                         flex: 1,
                       ),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
-                        child: TextFormField(
-                          validator: (val){
-                            if(val!.isEmpty){
-                              return "Please provide valid Customer Id";
-                            }
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
+                        child: DropdownSearch<String>(
+                          onChanged: (String? val){
+                            _customerId.text = val!;
                           },
-                          onSaved: (val){
-                            _customerId = val!;
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color(0xfff6f7fa),
-                            hintText: "Customer Id",
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: BorderSide(
-                                    color: Color(0xfff6f7fa)
-                                )
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(
-                                color: Color(0xfff6f7fa),
-                              ),
-                            ),
+                          popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              fit: FlexFit.loose,
+                              constraints: BoxConstraints.tightFor(
+                                  width: double.infinity,
+                                  height: 300
+                              )
                           ),
+                          items: _customers!,
                         ),
                       ),
                         flex: 1,),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           validator: (val){
@@ -208,7 +208,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                       ),
                         flex: 1,
                       ),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
                         child: TextFormField(
                           validator: (val){
                             if(val!.isEmpty){
@@ -243,7 +243,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                         ),
                       ),
                         flex: 1,),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
                         child: TextFormField(
                           validator: (val){
                             if(val!.isEmpty){
@@ -274,7 +274,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                       ),
                         flex: 1,
                       ),
-                      Flexible(child: Padding(padding: EdgeInsets.all(10),
+                      Flexible(child: Padding(padding: EdgeInsets.all(5),
                         child: TextFormField(
                           validator: (val){
                             if(val!.isEmpty){
@@ -305,6 +305,7 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
                       ),
                         flex: 1,
                       ),
+                      SizedBox(height: 10,),
                       Flexible(child: InkWell(onTap: (){
                         _validateInvoiceForm();
                       },child: Container(
@@ -341,12 +342,27 @@ class _InvoiceInputFormState extends State<InvoiceInputForm> {
         "Invoice_No" : _invoiceNo,
         "Invoice_Date" : _invoiceDate,
         "Invoice_Amount" : _invoiceAmount,
-        "Customer_Id" : _customerId,
+        "Customer_Id" : _customerId.text,
         "Adjustment_Type" : _adjustmentType,
         "Rebate" : _rebate,
         "Adj_Document_No" : _adjustmentDocumentNo,
         "Adj_Document_Date" : _adjustmentDocumentDate
       });
     }
+  }
+  Future<List<String>?> _getCustomersId() async{
+    try {
+      var query = await FirebaseFirestore.instance.collection("Customers").get();
+      var data = query.docs;
+      List<String> customerIds = [];
+      for(int i = 0; i < data.length; i++){
+        customerIds.add(data[i].reference.id);
+      }
+      return customerIds;
+    }
+    catch(e){
+      print(e);
+    }
+
   }
 }

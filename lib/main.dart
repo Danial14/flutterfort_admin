@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fortline_admin_app/view/LoginView.dart';
+import 'package:fortline_admin_app/view/all_inovices.dart';
+import 'package:fortline_admin_app/view/invoice_input.dart';
+import 'package:fortline_admin_app/view/show_customers.dart';
 
 import 'firebase_options.dart';
 
@@ -31,7 +34,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: LoginView(),
+      home: InvoiceInputForm(),
     );
   }
 }
