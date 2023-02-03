@@ -2,8 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fortline_admin_app/view/LoginView.dart';
 import 'package:fortline_admin_app/view/all_inovices.dart';
+import 'package:fortline_admin_app/view/edit_invoices_provider.dart';
 import 'package:fortline_admin_app/view/invoice_input.dart';
-import 'package:fortline_admin_app/view/show_customers.dart';
+import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 
@@ -19,7 +20,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ChangeNotifierProvider(create: (ctx){
+      return EditInvoicesProvider();
+    },
+    child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -35,6 +39,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: InvoiceInputForm(),
+    ),
     );
   }
 }

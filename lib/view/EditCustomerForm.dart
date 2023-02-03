@@ -1,28 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:fortline_admin_app/view/edit_invoices_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'appdrawer.dart';
+import 'edit_invoices_provider.dart';
 
-class EditInvoiceForm extends StatefulWidget {
-  const EditInvoiceForm({Key? key}) : super(key: key);
+class EditCustomerForm extends StatefulWidget {
+  const EditCustomerForm({Key? key}) : super(key: key);
 
   @override
-  State<EditInvoiceForm> createState() => _EditInvoiceFormState();
+  State<EditCustomerForm> createState() => _EditCustomerFormState();
 }
 
-class _EditInvoiceFormState extends State<EditInvoiceForm> {
-  TextEditingController _invoiceDate = TextEditingController();
-  TextEditingController _invoiceAmount = TextEditingController();
-  TextEditingController _customerId = TextEditingController();
-  TextEditingController _adjustmentType = TextEditingController();
-  TextEditingController _adjustmentDocumentNo = TextEditingController();
+class _EditCustomerFormState extends State<EditCustomerForm> {
+  TextEditingController _customerName = TextEditingController();
+  TextEditingController _customerStatus = TextEditingController();
+  TextEditingController _mobileNo = TextEditingController();
+  TextEditingController _password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   TextEditingController _adjDate = TextEditingController();
   TextEditingController _rebateController = TextEditingController();
-  List<QueryDocumentSnapshot<Map<String, dynamic>>>? _invoices;
+  List<QueryDocumentSnapshot<Map<String, dynamic>>>? _customersData;
   @override
   void initState() {
     // TODO: implement initState
@@ -58,29 +57,24 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                 FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>(
                   builder: (ctx, snapshot){
                     if(snapshot.hasData){
-                      _invoices = snapshot.data;
+                      _customersData = snapshot.data;
                       return Container(
                         child: Consumer<EditInvoicesProvider>(
                           builder: (BuildContext context, editInvoiceData, Widget? child) {
                             print("inside consumer");
                             var referenceIndex;
                             String docId = editInvoiceData.getDocId();
-                            print(_invoices!.length);
-                            Map<String, dynamic> invoice = {};
-                            List<String> _customers = [];
-                            for(int i = 0; i < _invoices!.length; i++){
-                              if(_invoices![i].reference.id == docId){
+                            print(_customersData!.length);
+                            Map<String, dynamic> customer = {};
+                            for(int i = 0; i < _customersData!.length; i++){
+                              if(_customersData![i].reference.id == docId){
                                 print("doc id $docId found");
-                                invoice = _invoices![i].data();
+                                customer = _customersData![i].data();
                                 referenceIndex = i;
-                                _customerId.text = invoice["Customer_Id"];
-                                _customers.add(_customerId.text);
-                                _rebateController.text = invoice["Rebate"].toString();
-                                _invoiceDate.text = invoice["Invoice_Date"];
-                                _invoiceAmount.text = invoice["Invoice_Amount"].toString();
-                                _adjustmentType.text = invoice["Adjustment_Type"];
-                                _adjustmentDocumentNo.text = invoice["Adj_Document_No"];
-                                _adjDate.text = invoice["Adj_Document_Date"];
+                                _mobileNo.text = customer["Mobile_No"].toString();
+                                _customerName.text = customer["Customer_Name"];
+                                _customerStatus.text = customer["Customer_Status"].toString();
+                                _password.text = customer["Pass"];
                               }
                             }
                             return Form(
@@ -114,19 +108,14 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                                   Flexible(fit: FlexFit.loose,child: Padding(padding: EdgeInsets.all(5),
                                     child: TextFormField(
                                       onSaved: (val){
-                                        _invoiceDate.text = val!;
+                                        _customerName.text = val!;
                                       },
-                                      keyboardType: TextInputType.datetime,
-                                      controller: _invoiceDate,
-                                      //controller: _invoiceDateController,
-                                      onTap: ()async{
-                                        DateTime? dateTime = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(hours: Duration.hoursPerDay * 365)));
-                                        _invoiceDate.text = "${dateTime!.year}-${dateTime.month}-${dateTime.day}";
-                                      },
+                                      keyboardType: TextInputType.text,
+                                      controller: _customerName,
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: Color(0xfff6f7fa),
-                                        hintText: "Invoice Date",
+                                        hintText: "Customer Name",
                                         enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(15),
                                             borderSide: BorderSide(
@@ -144,15 +133,15 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                                   ), flex: 1,),
                                   Flexible(fit: FlexFit.loose,child: Padding(padding: EdgeInsets.all(5),
                                     child: TextFormField(
-                                        onSaved: (val){
-                                          _invoiceAmount.text = val!;
-                                        },
-                                      keyboardType: TextInputType.number,
-                                      controller: _invoiceAmount,
+                                      onSaved: (val){
+                                        _customerStatus.text = val!;
+                                      },
+                                      keyboardType: TextInputType.text,
+                                      controller: _customerStatus,
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: Color(0xfff6f7fa),
-                                        hintText: "Invoice Amount",
+                                        hintText: "Customer Status",
                                         enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(15),
                                             borderSide: BorderSide(
@@ -171,34 +160,16 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                                     flex: 1,
                                   ),
                                   Flexible(fit: FlexFit.loose,child: Padding(padding: EdgeInsets.all(5),
-                                    child: DropdownSearch<String>(
-                                      onChanged: (String? val){
-                                        _customerId.text = val!;
-                                      },
-                                      popupProps: PopupProps.menu(
-                                          showSearchBox: true,
-                                          fit: FlexFit.loose,
-                                          constraints: BoxConstraints.tightFor(
-                                              width: double.infinity,
-                                              height: 300
-                                          )
-                                      ),
-                                      items: _customers,
-                                      selectedItem: _customerId.text,
-                                    ),
-                                  ),
-                                    flex: 1,),
-                                  Flexible(fit: FlexFit.loose,child: Padding(padding: EdgeInsets.all(5),
                                     child: TextFormField(
                                       onSaved: (val){
-                                        _rebateController.text = val!;
+                                        _mobileNo.text = val!;
                                       },
                                       keyboardType: TextInputType.number,
-                                      controller: _rebateController,
+                                      controller: _mobileNo,
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: Color(0xfff6f7fa),
-                                        hintText: "Rebate",
+                                        hintText: "Mobile No",
                                         enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(15),
                                             borderSide: BorderSide(
@@ -219,71 +190,13 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                                   Flexible(fit: FlexFit.loose,child: Padding(padding: EdgeInsets.all(5),
                                     child: TextFormField(
                                       onSaved: (val){
-                                        _adjDate.text = val!;
+                                        _password.text = val!;
                                       },
-                                      controller: _adjDate,
-                                    //  controller: _adjDate,
-                                      onTap: ()async{
-                                        DateTime? dateTime = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(hours: Duration.hoursPerDay * 365)));
-                                        _adjDate.text = "${dateTime!.year}-${dateTime.month}-${dateTime.day}";
-                                      },
+                                      controller: _password,
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: Color(0xfff6f7fa),
-                                        hintText: "Adjustment Document Date",
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(15),
-                                            borderSide: BorderSide(
-                                                color: Color(0xfff6f7fa)
-                                            )
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(15),
-                                          borderSide: BorderSide(
-                                            color: Color(0xfff6f7fa),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                    flex: 1,),
-                                  Flexible(fit: FlexFit.loose,child: Padding(padding: EdgeInsets.all(5),
-                                    child: TextFormField(
-                                      onSaved: (val){
-                                        _adjustmentDocumentNo.text = val!;
-                                      },
-                                      controller: _adjustmentDocumentNo,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Color(0xfff6f7fa),
-                                        hintText: "Adjustment Document No",
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(15),
-                                            borderSide: BorderSide(
-                                                color: Color(0xfff6f7fa)
-                                            )
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(15),
-                                          borderSide: BorderSide(
-                                            color: Color(0xfff6f7fa),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                    flex: 1,
-                                  ),
-                                  Flexible(fit: FlexFit.loose,child: Padding(padding: EdgeInsets.all(5),
-                                    child: TextFormField(
-                                      onSaved: (val){
-                                        _adjustmentType.text = val!;
-                                      },
-                                      controller: _adjustmentType,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Color(0xfff6f7fa),
-                                        hintText: "Adjustment Type",
+                                        hintText: "Password",
                                         enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(15),
                                             borderSide: BorderSide(
@@ -304,12 +217,12 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                                   SizedBox(height: 10,),
                                   Flexible(fit: FlexFit.loose,child: InkWell(onTap: (){
                                     _updateInvoice(docId);
-                                    if(_invoices!.length > 0){
+                                    if(_customersData!.length > 0){
                                       print("refInd $referenceIndex");
-                                      _invoices!.removeAt(referenceIndex);
-                                      if(_invoices!.isEmpty){
+                                      _customersData!.removeAt(referenceIndex);
+                                      if(_customersData!.isEmpty){
                                         editInvoiceData.removeLastDocId();
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("All invoices are edited")));
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("All customers are edited")));
                                       }
                                       else {
                                         editInvoiceData.removeDocId();
@@ -343,7 +256,7 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                     }
                     return Center(child: CircularProgressIndicator(),);
                   },
-                  future: _getInvoices(),
+                  future: _getCustomers(),
                 )
               ],
             ),
@@ -352,18 +265,15 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
     );
   }
   void _updateInvoice(String docId) async{
-      _formKey.currentState!.save();
-      await FirebaseFirestore.instance.collection("Invoice").doc(docId).update({
-        //"Invoice_No" : _invoiceNo,
-        "Invoice_Date" : _invoiceDate.text,
-        "Invoice_Amount" : int.parse(_invoiceAmount.text),
-        "Customer_Id" : _customerId.text,
-        "Adjustment_Type" : _adjustmentType.text,
-        "Rebate" : int.parse(_rebateController.text),
-        "Adj_Document_No" : _adjustmentDocumentNo.text,
-        "Adj_Document_Date" : _adjDate.text
-      });
-      /*_invoiceDate = "";
+    _formKey.currentState!.save();
+    await FirebaseFirestore.instance.collection("Customers").doc(docId).update({
+      //"Invoice_No" : _invoiceNo,
+      "Customer_Name" : _customerName.text,
+      "Customer_Status" : _customerStatus.text,
+      "Mobile_No" : _mobileNo.text,
+      "Pass" : _password.text,
+    });
+    /*_invoiceDate = "";
       _invoiceAmount = 0;
       _customerId.text = "";
       _adjustmentType = "";
@@ -371,12 +281,12 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
       _adjustmentDocumentNo = "";
       _adjDate = "";*/
   }
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> _getInvoices() async{
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> _getCustomers() async{
     try {
-      var query = await FirebaseFirestore.instance.collection("Invoice").get();
-      var invoicesData = query.docs;
-      print("invoicesData size: ${invoicesData.length}");
-      return invoicesData;
+      var query = await FirebaseFirestore.instance.collection("Customers").get();
+      var customersData = query.docs;
+      print("customersData size: ${customersData.length}");
+      return customersData;
     }
     catch(e){
       print(e);

@@ -1,35 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fortline_admin_app/view/edit_invoices_form.dart';
-import 'package:fortline_admin_app/view/edit_invoices_provider.dart';
+import 'package:fortline_admin_app/view/EditCustomerForm.dart';
 import 'package:provider/provider.dart';
 
 import 'appdrawer.dart';
+import 'edit_invoices_provider.dart';
 
-class DeleteOrEditInvoices extends StatefulWidget {
+class DeleteOrEditCustomers extends StatefulWidget {
   late String _mode;
-  DeleteOrEditInvoices(String mode){
+  DeleteOrEditCustomers(String mode){
     this._mode = mode;
   }
+
   @override
-  State<DeleteOrEditInvoices> createState() => _DeleteOrEditInvoicesState();
+  State<DeleteOrEditCustomers> createState() => _DeleteOrEditCustomersState();
 }
 
-class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
-  var _invoicesFuture;
-  final List<String> _columns = const ["Invoice_No","Invoice_Date","Invoice_Amount","Customer_Id","Rebate","Adj_Document_Date",
-    "Adj_Document_No","Adjustment_Type", "Delete"];
+class _DeleteOrEditCustomersState extends State<DeleteOrEditCustomers> {
+  final List<String> _columns = const ["Customer_Id", "Customer_Name", "Customer_Status", "Email", "Mobile_No", "Pass", "Registration_Time", "DeleteOrEdit"];
   List<String> _docIds = [];
   List<String> _itemsToBeDeletedOrEdited = [];
   ValueNotifier<bool> checkBoxStatus = ValueNotifier<bool>(false);
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future.delayed(Duration.zero, (){
-     //_invoicesFuture = _getInvoices();
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +29,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
       body: Column(
         children: <Widget>[
           SizedBox(height: 50,),
-          Flexible(child: Text(widget._mode == "delete" ? "Delete Invoices" : "Edit Invoices",
+          Flexible(child: Text(widget._mode == "delete" ? "Delete Customers" : "Edit Customers",
             style: TextStyle(fontSize: 30,
                 fontWeight: FontWeight.bold
             ),
@@ -53,7 +44,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                   width: 250,
                   height: 50,
                   child: Center(
-                    child: Text("Invoice No",
+                    child: Text("Customer_Id",
                       style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),
@@ -68,7 +59,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                   width: 250,
                   height: 50,
                   child: Center(
-                    child: Text("Invoice Date",
+                    child: Text("Customer Name",
                       style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),
@@ -83,7 +74,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                   width: 250,
                   height: 50,
                   child: Center(
-                    child: Text("Invoice Amount",
+                    child: Text("Customer Status",
                       style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),
@@ -100,7 +91,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                     width: 250,
                     height: 50,
                     child: Center(
-                      child: Text("Customer Id",
+                      child: Text("Email",
                         style: TextStyle(
                             fontWeight: FontWeight.bold
                         ),
@@ -117,7 +108,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                     width: 250,
                     height: 50,
                     child: Center(
-                      child: Text("Rebate",
+                      child: Text("Mobile No",
                         style: TextStyle(
                             fontWeight: FontWeight.bold
                         ),
@@ -132,7 +123,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                   width: 250,
                   height: 50,
                   child: Center(
-                    child: Text("Adjustment Document Date",
+                    child: Text("Password",
                       style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),
@@ -148,24 +139,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                     width: 250,
                     height: 50,
                     child: Center(
-                      child: Text("Adjustment Document No",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 219, 88, 0.4)
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: Container(
-                    width: 250,
-                    height: 50,
-                    child: Center(
-                      child: Text("Adjustment Type",
+                      child: Text("Registration Time",
                         style: TextStyle(
                             fontWeight: FontWeight.bold
                         ),
@@ -351,7 +325,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
           }
           else{
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx){
-              return EditInvoiceForm();
+              return EditCustomerForm();
             }));
           }
         },
@@ -361,7 +335,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
   Future<QuerySnapshot<Map<String, dynamic>>> _getInvoices() async{
     print("fetching invoices");
     try {
-      var ref = await FirebaseFirestore.instance.collection("Invoice");
+      var ref = await FirebaseFirestore.instance.collection("Customers");
       var query = await ref.get();
       List<QueryDocumentSnapshot<Map<String, dynamic>>> data = query.docs;
       for (int i = 0; i < data.length; i++) {

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fortline_admin_app/view/deleteoreditcustomerandinvoices.dart';
+import 'package:fortline_admin_app/view/deleteoreditcustomers.dart';
+import 'package:fortline_admin_app/view/show_customers.dart';
 
 
 class AppDrawer extends StatelessWidget{
@@ -17,15 +19,22 @@ class AppDrawer extends StatelessWidget{
           SizedBox(height: 8,),
           ListTile(
             leading: Icon(Icons.download),
-            title: Text("Download customer report"),
+            title: Text("Edit Invoices"),
             onTap: (){
-
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx){
+                return DeleteOrEditInvoices("edit");
+              }));
             },
           ),
           SizedBox(height: 8,),
           ListTile(
             leading: Icon(Icons.person),
             title: Text("Show Customers"),
+            onTap: (){
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx){
+                return ShowCustomers();
+              }));
+            },
           ),
 
           SizedBox(height: 8,),
@@ -80,8 +89,11 @@ class AppDrawer extends StatelessWidget{
           SizedBox(height: 8,),
           ListTile(
             leading: Icon(Icons.my_location_rounded),
-            title: Text("Current location"),
+            title: Text("Edit Customers"),
             onTap: (){
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx){
+                return DeleteOrEditCustomers("edit");
+              }));
             },
           ),
           SizedBox(height: 8,),

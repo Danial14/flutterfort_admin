@@ -18,9 +18,9 @@ class _ShowCustomersState extends State<ShowCustomers> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration.zero, (){
+    /*Future.delayed(Duration.zero, (){
       _customerFuture = _getCustomers();
-    });
+    });*/
   }
   @override
   Widget build(BuildContext context) {
@@ -157,7 +157,7 @@ class _ShowCustomersState extends State<ShowCustomers> {
             ), flex: 1,),
           ),
           Flexible(child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            future: _customerFuture,
+            future: _getCustomers(),
             builder: (ctx, snapshot){
               if(snapshot.hasData){
                 int rowIndex = 0;
