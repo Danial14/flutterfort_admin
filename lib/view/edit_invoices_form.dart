@@ -49,7 +49,7 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
             child: Column(
               children: <Widget>[
                 SizedBox(height: 10,),
-                Text("Invoice form", style: TextStyle(
+                Text("Edit Invoice form", style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30
                 ),
@@ -304,18 +304,15 @@ class _EditInvoiceFormState extends State<EditInvoiceForm> {
                                   SizedBox(height: 10,),
                                   Flexible(fit: FlexFit.loose,child: InkWell(onTap: (){
                                     _updateInvoice(docId);
-                                    if(_invoices!.length > 0){
+                                    if(editInvoiceData.getIdSize() > 0){
                                       print("refInd $referenceIndex");
                                       _invoices!.removeAt(referenceIndex);
-                                      if(_invoices!.isEmpty){
-                                        editInvoiceData.removeLastDocId();
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("All invoices are edited")));
+                                      editInvoiceData.removeId(docId);
+                                      if(editInvoiceData.getIdSize() == 0){
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("All Invoices are edited")));
                                       }
                                       else {
-                                        editInvoiceData.removeDocId();
-                                        /*setState(() {
-
-                                        });*/
+                                        editInvoiceData.notify();
                                       }
                                     }
                                   },child: Container(

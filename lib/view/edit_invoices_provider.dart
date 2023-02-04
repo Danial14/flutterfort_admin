@@ -15,11 +15,13 @@ class EditInvoicesProvider with ChangeNotifier{
     print("docids size ${_docIds.length}");
     return _docIds[0];
   }
-  void removeLastDocId(){
-    print("removelast");
-    _docIds.removeLast();
-  }
   void removeId(String docId){
     _docIds.remove(docId);
+  }
+  int getIdSize(){
+    return _docIds.length;
+  }
+  void notify(){
+    notifyListeners();
   }
 }

@@ -48,7 +48,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
             child: Column(
               children: <Widget>[
                 SizedBox(height: 10,),
-                Text("Invoice form", style: TextStyle(
+                Text("Edit Customer form", style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30
                 ),
@@ -75,6 +75,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                                 _customerName.text = customer["Customer_Name"];
                                 _customerStatus.text = customer["Customer_Status"].toString();
                                 _password.text = customer["Pass"];
+                                break;
                               }
                             }
                             return Form(
@@ -217,18 +218,15 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                                   SizedBox(height: 10,),
                                   Flexible(fit: FlexFit.loose,child: InkWell(onTap: (){
                                     _updateInvoice(docId);
-                                    if(_customersData!.length > 0){
+                                    if(editInvoiceData.getIdSize() > 0){
                                       print("refInd $referenceIndex");
                                       _customersData!.removeAt(referenceIndex);
-                                      if(_customersData!.isEmpty){
-                                        editInvoiceData.removeLastDocId();
+                                      editInvoiceData.removeId(docId);
+                                      if(editInvoiceData.getIdSize() == 0){
                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("All customers are edited")));
                                       }
                                       else {
-                                        editInvoiceData.removeDocId();
-                                        /*setState(() {
-
-                                        });*/
+                                        editInvoiceData.notify();
                                       }
                                     }
                                   },child: Container(

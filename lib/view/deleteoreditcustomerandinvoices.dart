@@ -239,7 +239,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                                 print(pos % (_columns.length - 1));
                                 if(this.widget._mode == "delete") {
                                   _itemsToBeDeletedOrEdited.add(
-                                      _docIds[rowIndex]);
+                                      _docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).addDocId(_docIds[pos % (_columns.length - 1)]);
@@ -247,7 +247,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                               }
                               else{
                                 if(this.widget._mode == "delete") {
-                                  _itemsToBeDeletedOrEdited.removeAt(rowIndex);
+                                  _itemsToBeDeletedOrEdited.remove(_docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).removeId(_docIds[pos % (_columns.length - 1)]);
@@ -275,7 +275,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                                 print(pos % (_columns.length - 1));
                                 if(this.widget._mode == "delete") {
                                   _itemsToBeDeletedOrEdited.add(
-                                      _docIds[rowIndex]);
+                                      _docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).addDocId(_docIds[pos % (_columns.length - 1)]);
@@ -283,7 +283,7 @@ class _DeleteOrEditInvoicesState extends State<DeleteOrEditInvoices> {
                               }
                               else{
                                 if(this.widget._mode == "delete") {
-                                  _itemsToBeDeletedOrEdited.removeAt(rowIndex);
+                                  _itemsToBeDeletedOrEdited.remove(_docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).removeId(_docIds[pos % (_columns.length - 1)]);

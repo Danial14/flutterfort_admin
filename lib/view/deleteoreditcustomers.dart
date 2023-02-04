@@ -213,7 +213,7 @@ class _DeleteOrEditCustomersState extends State<DeleteOrEditCustomers> {
                                 print(pos % (_columns.length - 1));
                                 if(this.widget._mode == "delete") {
                                   _itemsToBeDeletedOrEdited.add(
-                                      _docIds[rowIndex]);
+                                      _docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).addDocId(_docIds[pos % (_columns.length - 1)]);
@@ -221,7 +221,7 @@ class _DeleteOrEditCustomersState extends State<DeleteOrEditCustomers> {
                               }
                               else{
                                 if(this.widget._mode == "delete") {
-                                  _itemsToBeDeletedOrEdited.removeAt(rowIndex);
+                                  _itemsToBeDeletedOrEdited.remove(_docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).removeId(_docIds[pos % (_columns.length - 1)]);
@@ -249,7 +249,7 @@ class _DeleteOrEditCustomersState extends State<DeleteOrEditCustomers> {
                                 print(pos % (_columns.length - 1));
                                 if(this.widget._mode == "delete") {
                                   _itemsToBeDeletedOrEdited.add(
-                                      _docIds[rowIndex]);
+                                      _docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).addDocId(_docIds[pos % (_columns.length - 1)]);
@@ -257,7 +257,7 @@ class _DeleteOrEditCustomersState extends State<DeleteOrEditCustomers> {
                               }
                               else{
                                 if(this.widget._mode == "delete") {
-                                  _itemsToBeDeletedOrEdited.removeAt(rowIndex);
+                                  _itemsToBeDeletedOrEdited.remove(_docIds[pos % (_columns.length - 1)]);
                                 }
                                 else{
                                   Provider.of<EditInvoicesProvider>(context,listen: false).removeId(_docIds[pos % (_columns.length - 1)]);
@@ -292,7 +292,7 @@ class _DeleteOrEditCustomersState extends State<DeleteOrEditCustomers> {
       floatingActionButton: FloatingActionButton(
         child: widget._mode == "delete" ? Icon(Icons.delete) : Icon(Icons.edit),
         onPressed: () async{
-          var ref = await FirebaseFirestore.instance.collection("Invoice");
+          var ref = await FirebaseFirestore.instance.collection("Customers");
           if(widget._mode == "delete"){
             if(_itemsToBeDeletedOrEdited.isNotEmpty){
               await showDialog(barrierDismissible: false,context: context, builder: (ctx){
